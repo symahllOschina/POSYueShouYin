@@ -1,0 +1,169 @@
+package com.wanding.xingpos.bean;
+
+import java.io.Serializable;
+
+/**  
+ * POS支付公共参数
+ * 包括POS机本身的商户号，设备号和自己服务商的商户号，设备号等参数 
+ * 
+ */
+public class UserLoginResData implements Serializable {
+	
+	private String access_token;//后台取到的公共令牌
+	
+	private String pay_ver = "100";//版本号（基本不变）
+	
+	private String merchant_no;//商户号
+	
+	private String terminal_id;//终端号
+	
+	private String orgNo_str_pos;//新大陆机构号（死值）后台取到的机构号（POS接口使用）
+
+	private String mercId_pos; //商户号（pos机商户识别号（POS接口使用））
+	
+	private String trmNo_pos; //设备号 进件生成的终端号（POS接口使用）;
+	
+	
+	private String mername_pos = "";//商户名称例如"新大陆行业部测试",
+	private String batchno_pos = "";//批次号
+	
+	private String mid;//商户id
+	private String eid;//款台id（结算或查询时用到）
+	private String ename;//"ename": "大客户会员款台"
+
+	private String eaccount;//款台账号
+	private String storeName;//门店名称
+
+	/**
+	 * 是否有优惠券
+	 * isQueryCoupons
+	 */
+	private boolean isQueryCoupons = true;
+
+	
+
+	public UserLoginResData() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getAccess_token() {
+		return access_token;
+	}
+
+	public void setAccess_token(String access_token) {
+		this.access_token = access_token;
+	}
+
+	public String getPay_ver() {
+		return pay_ver;
+	}
+
+	public void setPay_ver(String pay_ver) {
+		this.pay_ver = pay_ver;
+	}
+
+	public String getMerchant_no() {
+		return merchant_no;
+	}
+
+	public void setMerchant_no(String merchant_no) {
+		this.merchant_no = merchant_no;
+	}
+
+	public String getTerminal_id() {
+		return terminal_id;
+	}
+
+	public void setTerminal_id(String terminal_id) {
+		this.terminal_id = terminal_id;
+	}
+
+	public String getOrgNo_str_pos() {
+		return orgNo_str_pos;
+	}
+
+	public void setOrgNo_str_pos(String orgNo_str_pos) {
+		this.orgNo_str_pos = orgNo_str_pos;
+	}
+
+	public String getMercId_pos() {
+		return mercId_pos;
+	}
+
+	public void setMercId_pos(String mercId_pos) {
+		this.mercId_pos = mercId_pos;
+	}
+
+	public String getTrmNo_pos() {
+		return trmNo_pos;
+	}
+
+	public void setTrmNo_pos(String trmNo_pos) {
+		this.trmNo_pos = trmNo_pos;
+	}
+
+	public String getMername_pos() {
+		return mername_pos;
+	}
+
+	public void setMername_pos(String mername_pos) {
+		this.mername_pos = mername_pos;
+	}
+
+	public String getBatchno_pos() {
+		return batchno_pos;
+	}
+
+	public void setBatchno_pos(String batchno_pos) {
+		this.batchno_pos = batchno_pos;
+	}
+
+	public String getMid() {
+		return mid;
+	}
+
+	public void setMid(String mid) {
+		this.mid = mid;
+	}
+
+	public String getEid() {
+		return eid;
+	}
+
+	public void setEid(String eid) {
+		this.eid = eid;
+	}
+
+	public String getEname() {
+		return ename;
+	}
+
+	public void setEname(String ename) {
+		this.ename = ename;
+	}
+
+	public String getEaccount() {
+		return eaccount;
+	}
+
+	public void setEaccount(String eaccount) {
+		this.eaccount = eaccount;
+	}
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
+	public boolean isQueryCoupons() {
+		return isQueryCoupons;
+	}
+
+	public void setQueryCoupons(boolean queryCoupons) {
+		isQueryCoupons = queryCoupons;
+	}
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/blue_409EFF"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+    <!-- 左侧箭头 -->
+    <LinearLayout
+        android:id="@+id/search_header_titleLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        >
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="18dp"
+            android:src="@drawable/back_icon"
+            />
+        <TextView
+            android:id="@+id/search_header_tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:paddingRight="15dp"
+            android:text="标题"
+            android:textColor="@color/white_ffffff"
+            android:textSize="@dimen/TextSize16"
+            />
+    </LinearLayout>
+
+    <!-- 右侧搜索按钮 -->
+    <TextView
+        android:id="@+id/search_header_tvSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="15dp"
+        android:text="查询"
+        android:textColor="@color/white_ffffff"
+        android:textSize="@dimen/TextSize16"
+        />
+
+    <!-- 中间搜索 -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/search_header_tvSearch"
+        android:layout_toRightOf="@id/search_header_titleLayout"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_white_frame1dp_radius20"
+        >
+        <com.wanding.xingpos.view.ClearEditText
+            android:id="@+id/search_header_etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="请输入核销劵码"
+            android:paddingLeft="10dp"
+            android:textSize="@dimen/TextSize16"
+            android:textColor="@color/grey_666666"
+            android:inputType="number"
+            android:maxLength="16"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

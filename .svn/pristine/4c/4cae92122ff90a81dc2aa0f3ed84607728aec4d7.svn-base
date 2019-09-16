@@ -1,0 +1,538 @@
+package com.wanding.xingpos;
+
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.RemoteException;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.fuyousf.android.fuious.service.PrintInterface;
+import com.nld.cloudpos.aidl.AidlDeviceService;
+import com.nld.cloudpos.aidl.printer.AidlPrinter;
+import com.nld.cloudpos.aidl.scan.AidlScanner;
+import com.wanding.xingpos.bean.PosInitData;
+import com.wanding.xingpos.bean.UserLoginResData;
+import com.wanding.xingpos.http.util.HttpURLConnectionUtil;
+import com.wanding.xingpos.http.util.NetworkUtils;
+import com.wanding.xingpos.payutil.FuyouPosServiceUtil;
+import com.wanding.xingpos.payutil.NewPosServiceUtil;
+import com.wanding.xingpos.printutil.FuyouPrintUtil;
+import com.wanding.xingpos.printutil.NewlandPrintUtil;
+import com.wanding.xingpos.utils.MySerialize;
+import com.wanding.xingpos.utils.SharedPreferencesUtil;
+import com.wanding.xingpos.utils.ToastUtil;
+import com.wanding.xingpos.utils.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xutils.view.annotation.ContentView;
+
+import java.io.IOException;
+
+import static com.wanding.xingpos.Constants.FUYOU_SF;
+
+/**
+ * 签到界面
+ */
+@ContentView(R.layout.activity_sign_in)
+public class SignInActivity extends BaseActivity {
+
+    /**
+     * 表示pos机厂商（提供者），默认情况下为新大陆newland
+     * 当调用新大陆SDK签到提示找不到界面时posProvider的值发生变化，改为 posProvider = "fuyousf"
+     * Constants.FUYOU_SF：对应富友POS机
+     * Constants.NEW_LAND：对应新大陆POS机
+     */
+    private String posProvider = Constants.FUYOU_SF;
+
+    /**
+     * 新大陆打印，摄像头参数
+     */
+    AidlDeviceService aidlDeviceService = null;
+    AidlPrinter aidlPrinter = null;
+    AidlScanner aidlScanner=null;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.e(TAG, "bind device service");
+            aidlDeviceService = AidlDeviceService.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e(TAG, "unbind device service");
+            aidlDeviceService = null;
+        }
+    };
+
+    /**
+     * 富友(打印机)AIDL服务
+     */
+    PrintInterface printService = null;
+    PrintReceiver printReceiver;
+    ServiceConnection printServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+            printService = PrintInterface.Stub.asInterface(arg1);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+        }
+
+    };
+
+    class PrintReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String result = intent.getStringExtra("result");
+//			etBack.setText("reason："+result);
+        }
+    }
+    /**
+     * 第一次从welcome界面和点击签到功能进入
+     * 区分不同入口，控制是否需获取POS机设备参数以及是否签到成功打印小票
+     */
+    private boolean isPrint = false;
+
+    /**
+     * POS初始化信息
+     * isPrint：签到成功是否打印小票
+     */
+    private PosInitData posInitData;
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        Intent intent = getIntent();
+        isPrint = intent.getBooleanExtra("isPrint",isPrint);
+
+        /**  取出POS机厂商标示 默认为新大陆  */
+        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(activity, "posInit");
+        if(sharedPreferencesUtil.contain("posProvider")){
+            //存在
+            Log.e("厂商标示设置：", "Key存在");
+        }else{
+            Log.e("厂商标示设置：", "Key不存在保存默认");
+            sharedPreferencesUtil.put("posProvider", posProvider);//保存pos提供者
+        }
+        if(isPrint){
+            appDataInstance();
+        }else{
+            if(sharedPreferencesUtil.contain("posMercId")){
+                posInitData = new PosInitData();
+                posInitData.setPosProvider((String)sharedPreferencesUtil.getSharedPreference("posProvider", ""));
+                posInitData.setMercId_pos((String)sharedPreferencesUtil.getSharedPreference("posMercId", ""));
+                posInitData.setTrmNo_pos((String)sharedPreferencesUtil.getSharedPreference("posTrmNo", ""));
+                posInitData.setMername_pos((String)sharedPreferencesUtil.getSharedPreference("posMername", ""));
+                posInitData.setBatchno_pos((String)sharedPreferencesUtil.getSharedPreference("posBatchno", ""));
+                Log.e("登录初始化信息：", "Key存在");
+                getLoginData();
+            }else{
+                Log.e("登录初始化信息：", "Key不存在");
+                appDataInstance();
+            }
+        }
+
+        if(posProvider.equals(Constants.NEW_LAND)){
+            //绑定打印机服务
+            bindServiceConnection();
+        }else if(posProvider.equals(Constants.FUYOU_SF)){
+            initPrintService();
+        }
+
+
+
+    }
+
+    /**
+     * Activity关闭时清空资源，关闭服务（包括打印机服务，扫码服务）
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(posProvider.equals(Constants.NEW_LAND)){
+            unbindService(serviceConnection);
+            aidlPrinter=null;
+            aidlScanner = null;
+        }else if(posProvider.equals(Constants.FUYOU_SF)){
+            if(null != printReceiver){
+                unregisterReceiver(printReceiver);
+            }
+            unbindService(printServiceConnection);
+        }
+        Log.e(TAG, "释放资源成功");
+    }
+
+    /**
+     * 绑定服务
+     */
+    public void bindServiceConnection() {
+        bindService(new Intent("nld_cloudpos_device_service"), serviceConnection,
+                Context.BIND_AUTO_CREATE);
+//        showMsgOnTextView("服务绑定");
+        Log.e("绑定服务", "绑定服务1");
+    }
+
+    private void initPrintService(){
+        printRegisterReceiver();
+        Intent printIntent = new Intent(/*"com.fuyousf.android.fuious.service.PrintInterface"*/);
+        printIntent.setAction("com.fuyousf.android.fuious.service.PrintInterface");
+        printIntent.setPackage("com.fuyousf.android.fuious");
+        bindService(printIntent, printServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void printRegisterReceiver(){
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.fuyousf.android.fuious.service.print");
+        printReceiver = new PrintReceiver();
+        registerReceiver(printReceiver, intentFilter);
+    }
+    /**
+     * 初始化打印设备
+     */
+    public void getPrinter() {
+        Log.i(TAG, "获取打印机设备实例...");
+        try {
+            aidlPrinter = AidlPrinter.Stub.asInterface(aidlDeviceService.getPrinter());
+//            showMsgOnTextView("初始化打印机实例");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /** 获取POS机本身的相关信息，获取应用初始化数据 */
+    private void appDataInstance(){
+
+        if(Utils.isNotEmpty(posProvider)){
+            try {
+                if(posProvider.equals(Constants.NEW_LAND)){
+
+                    NewPosServiceUtil.signInReq(activity);
+
+                }else if(posProvider.equals(Constants.FUYOU_SF)){
+
+                    FuyouPosServiceUtil.signInReq(activity);
+
+                }
+            } catch(ActivityNotFoundException e) {
+                //TODO:
+                Log.e("Newland_Exception", "找不到界面");
+            } catch(Exception e) {
+                //TODO:
+                Log.e("Exception：", "异常");
+            }
+        }else{
+            ToastUtil.showText(activity,"POS机初始化参数失败！",1);
+        }
+
+    }
+
+
+    /** 获取登录信息（签到）  */
+    private void getLoginData(){
+        if(isPrint){
+            showWaitDialog("正在签到...");
+        }
+        final String url = NitConfig.loginUrl;
+        new Thread(){
+            @Override
+            public void run() {
+                JSONObject userJSON = new JSONObject();
+                try {
+                    userJSON.put("thirdMid",posInitData.getMercId_pos());   //商户号
+                    userJSON.put("terminal_id",posInitData.getTrmNo_pos()); //  设备号，终端号
+                    if(posProvider.equals(FUYOU_SF)){
+                        userJSON.put("type","5"); //设备识别类型：5表示POS机为富友厂商
+                    }
+                    String content = String.valueOf(userJSON);
+                    Log.e("签到发起请求参数：", content);
+                    String jsonStr = HttpURLConnectionUtil.doPos(url,content);
+                    Log.e("签到发起返回字符串结果：", jsonStr);
+                    int msg = NetworkUtils.MSG_WHAT_ONE;
+                    String text = jsonStr;
+                    sendMessage(msg,text);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    sendMessage(NetworkUtils.REQUEST_JSON_CODE,NetworkUtils.REQUEST_JSON_TEXT);
+                }catch (IOException e){
+                    e.printStackTrace();
+                    sendMessage(NetworkUtils.REQUEST_IO_CODE,NetworkUtils.REQUEST_IO_TEXT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    sendMessage(NetworkUtils.REQUEST_CODE,NetworkUtils.REQUEST_TEXT);
+                }
+            }
+        }.start();
+    }
+
+    private void sendMessage(int what,String text){
+        Message msg = new Message();
+        msg.what = what;
+        msg.obj = text;
+        handler.sendMessage(msg);
+    }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            String errorJsonText = "";
+            switch (msg.what){
+                case NetworkUtils.MSG_WHAT_ONE:
+                    String loginJsonStr=(String) msg.obj;
+                    loginJsonStr(loginJsonStr);
+                    hideWaitDialog();
+                    break;
+                case NetworkUtils.REQUEST_JSON_CODE:
+                    errorJsonText = (String) msg.obj;
+                    ToastUtil.showText(activity,errorJsonText,1);
+                    hideWaitDialog();
+                    break;
+                case NetworkUtils.REQUEST_IO_CODE:
+                    errorJsonText = (String) msg.obj;
+                    ToastUtil.showText(activity,errorJsonText,1);
+                    hideWaitDialog();
+                    break;
+                case NetworkUtils.REQUEST_CODE:
+                    errorJsonText = (String) msg.obj;
+                    ToastUtil.showText(activity,errorJsonText,1);
+                    hideWaitDialog();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void loginJsonStr(String jsonStr){
+        String loginInfoStr = "";
+        if(Utils.isNotEmpty(jsonStr)){
+            try {
+                JSONObject job = new JSONObject(jsonStr);
+                String statusStr = job.getString("status");
+                if("200".equals(statusStr)){
+                    Log.e("签到查询状态：", "成功！");
+                    loginInfoStr = job.getString("data");
+//                    ToastUtil.showText(activity,"签到成功！",1);
+                }else{
+                    ToastUtil.showText(activity,"签到失败！",Toast.LENGTH_LONG,2);
+                }
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }else{
+            ToastUtil.showText(activity,"签到失败！",Toast.LENGTH_LONG,2);
+        }
+        //保存签到信息
+        saveLoginInfo(loginInfoStr);
+    }
+
+    /**
+     * 保存签到信息
+     */
+    private void saveLoginInfo(String jsonStr){
+        UserLoginResData logResData = new UserLoginResData();
+        if(Utils.isNotEmpty(jsonStr)){
+            try {
+                JSONObject dataJob = new JSONObject(jsonStr);
+                //json返回信息
+                logResData.setAccess_token(dataJob.getString("accessToken"));
+                logResData.setMerchant_no(dataJob.getString("merchant_no"));
+                logResData.setTerminal_id(dataJob.getString("terminal_id"));
+                logResData.setMid(dataJob.getString("mid"));
+                logResData.setEid(dataJob.getString("eid"));
+
+//                logResData.setAccess_token("wwh88pdhkqps1xvhxb0fcqa61bs7awyz");
+//                logResData.setMerchant_no("1000179");
+//                logResData.setTerminal_id("10108");
+//                logResData.setMid("344");
+//                logResData.setEid("132");
+
+                logResData.setEname(dataJob.getString("ename"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            //json返回信息
+            logResData.setAccess_token("");
+            logResData.setMerchant_no("");
+            logResData.setTerminal_id("");
+            logResData.setMid("");
+            logResData.setEid("");
+            logResData.setEname("");
+
+        }
+
+        //pos初始化信息
+        logResData.setMercId_pos(posInitData.getMercId_pos());
+        logResData.setTrmNo_pos(posInitData.getTrmNo_pos());
+        logResData.setMername_pos(posInitData.getMername_pos());
+        logResData.setBatchno_pos(posInitData.getBatchno_pos());
+
+        /**
+         * 下面是调用帮助类将一个对象以序列化的方式保存
+         * 方便我们在其他界面调用，类似于Intent携带数据
+         */
+        try {
+            MySerialize.saveObject("UserLoginResData",activity,MySerialize.serialize(logResData));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if(Utils.isNotEmpty(jsonStr)){
+            if(isPrint){
+                //打印商户信息
+                if(posProvider.equals(Constants.NEW_LAND)){
+                    //初始化打印机
+                    getPrinter();
+                    //打印
+                    NewlandPrintUtil.businessInfoPrintText(activity, aidlPrinter,logResData);
+                }else if(posProvider.equals(FUYOU_SF)){
+                    //打印
+                    FuyouPrintUtil.businessInfoPrintText(activity,printService,logResData);
+                }
+            }
+        }
+
+        if(!isPrint){
+            Intent intent = new Intent();
+            intent.setClass(activity,MainActivity.class);
+            startActivity(intent);
+            //跳转动画效果
+            overridePendingTransition(R.anim.in_from, R.anim.to_out);
+        }
+        finish();
+    }
+
+    /**
+     * 新大陆界面访问成功返回
+     */
+    private void newlandSignResult(Bundle bundle){
+        String msgTp = bundle.getString("msg_tp");
+        if (TextUtils.equals(msgTp, "0310")) {
+            String txndetail = bundle.getString("txndetail");
+            Log.e("txndetail获取设备商户信息：", txndetail);
+            try {
+                JSONObject job = new JSONObject(txndetail);
+                posInitData = new PosInitData();
+                posInitData.setMercId_pos(job.getString("merid"));
+                posInitData.setTrmNo_pos(job.getString("termid"));
+                posInitData.setMername_pos(job.getString("mername"));
+                posInitData.setBatchno_pos(job.getString("batchno"));
+                //将需要的参数传入支付请求公共类保存在本地
+                saveDataLocal(posInitData);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                ToastUtil.showText(activity,"POS签到失败！请联系技术！",Toast.LENGTH_LONG,2);
+            }
+
+        }
+    }
+
+    /**
+     * 富友界面访问成功返回
+     */
+    private void fuyouSignResult(Bundle bundle){
+
+        String merchantIdStr = bundle.getString("merchantId");//商户号
+        String terminalIdStr = bundle.getString("terminalId");//终端号
+        String merchantNameStr = bundle.getString("merchantName");//商户名
+        String batchNoStr = "";//批次号（富友签到时不返回该字段）
+
+        posInitData = new PosInitData();
+        posInitData.setPosProvider(posProvider);
+        posInitData.setMercId_pos(merchantIdStr);
+        posInitData.setTrmNo_pos(terminalIdStr);
+        posInitData.setMername_pos(merchantNameStr);
+        posInitData.setBatchno_pos(batchNoStr);
+        //将需要的参数传入支付请求公共类保存在本地
+        saveDataLocal(posInitData);
+    }
+
+    private void saveDataLocal(PosInitData data){
+
+        /**
+         * 下面是调用帮助类将一个对象以序列化的方式保存
+         * 方便我们在其他界面调用，类似于Intent携带数据
+         */
+        try {
+            MySerialize.saveObject("PosInitData",activity,MySerialize.serialize(data));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Log.e("保存POS机初始化信息：","成功！");
+        //将POS初始化信息保存在本地
+        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(activity, "posInit");
+        sharedPreferencesUtil.put("posMercId", posInitData.getMercId_pos());
+        sharedPreferencesUtil.put("posTrmNo", posInitData.getTrmNo_pos());
+        sharedPreferencesUtil.put("posMername", posInitData.getMername_pos());
+        sharedPreferencesUtil.put("posBatchno", posInitData.getBatchno_pos());
+        //执行登陆功能
+        getLoginData();
+
+
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try{
+            Bundle bundle = data.getExtras();
+            /**
+             *  签到返回
+             */
+            if (requestCode == FuyouPosServiceUtil.SIGN_REQUEST_CODE&&bundle != null) {
+                switch (resultCode) {
+                    // 请求成功
+                    case Activity.RESULT_OK:
+                        if(posProvider.equals(Constants.NEW_LAND)){
+                            newlandSignResult(bundle);
+                        }else if(posProvider.equals(Constants.FUYOU_SF)){
+                            fuyouSignResult(bundle);
+                        }
+                        break;
+                    // 请求取消
+                    case Activity.RESULT_CANCELED:
+                        String reason = bundle.getString("reason");
+                        if (reason != null) {
+                            ToastUtil.showText(activity,"POS机初始化参数失败！",Toast.LENGTH_LONG,2);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+}

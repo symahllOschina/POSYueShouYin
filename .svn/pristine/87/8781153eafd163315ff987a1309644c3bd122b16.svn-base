@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group0"
+        >
+        <item
+            android:id="@+id/sign"
+            android:icon="@drawable/sign_in_icon"
+            android:title="POS签到"
+            >
+        </item>
+    </group>
+    <group
+        android:id="@+id/group1"
+        >
+        <item
+            android:id="@+id/orderlist"
+            android:icon="@drawable/order_list_icon"
+            android:title="交易明细"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group2"
+        >
+        <item
+            android:id="@+id/auth"
+            android:icon="@drawable/auth_icon"
+            android:title="预授权"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group3"
+        >
+        <item
+            android:id="@+id/shift"
+            android:icon="@drawable/shift_icon"
+            android:title="交接班"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group4"
+        >
+        <item
+            android:id="@+id/again_print"
+            android:icon="@drawable/again_print_icon"
+            android:title="重打印"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group5"
+        >
+        <item
+            android:id="@+id/refund"
+            android:icon="@drawable/refund_icon"
+            android:title="退款"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group6"
+        >
+        <item
+            android:id="@+id/scan_query_order"
+            android:icon="@drawable/scan_order_icon"
+            android:title="扫码查单"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group7"
+        >
+        <item
+            android:id="@+id/stafflist"
+            android:icon="@drawable/stafflist_icon"
+            android:title="员工"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group8"
+        >
+        <item
+            android:id="@+id/setting"
+            android:icon="@drawable/setting_icon"
+            android:title="设置"
+            >
+        </item>
+    </group>
+    <group android:id="@+id/group9"
+        >
+        <item
+            android:id="@+id/backups"
+            android:title=""
+            >
+        </item>
+    </group>
+</menu>

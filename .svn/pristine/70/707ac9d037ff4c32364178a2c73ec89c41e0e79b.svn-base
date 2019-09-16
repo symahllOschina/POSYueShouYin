@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white_f3f7fd"
+     >
+    
+    <include layout="@layout/menu_title_layout"/>
+    <View style="@style/divider_line1dp"/>
+    <include layout="@layout/select_datetime_layout"/>
+	<View
+	    style="@style/divider_line1dp"
+	    />
+	<LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/white_ffffff"
+        >
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="交班开始时间"
+            android:textSize="@dimen/TextSize14"
+            android:textColor="@color/black_000000"
+            android:gravity="center"
+            />
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="交班结束时间"
+            android:textSize="@dimen/TextSize14"
+            android:textColor="@color/black_000000"
+            android:gravity="center"
+            />
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="交班人"
+            android:textSize="@dimen/TextSize14"
+            android:textColor="@color/black_333"
+            android:gravity="center"
+            />
+        <TextView 
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="操作"
+            android:textSize="@dimen/TextSize14"
+            android:textColor="@color/black_333"
+            android:gravity="center"
+            />
+    </LinearLayout>
+	<View
+	    style="@style/divider_line1dp"
+	    />
+	<com.wanding.xingpos.view.XListView
+	    android:id="@+id/settlement_record_listView"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="1"
+		android:background="@color/white_f2f2f2"
+	    ></com.wanding.xingpos.view.XListView>
+</LinearLayout>

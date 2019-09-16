@@ -1,0 +1,53 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.wanding.xingpos"
+        minSdkVersion 19
+        targetSdkVersion 27
+        /** 富友POS版本号  */
+        versionCode 15
+        versionName "1.25"
+        /** 新大陆POS版本号  */
+//        versionCode 32
+//        versionName "1.3.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //xutils该项目主要用于加载控件 https://www.cnblogs.com/minghualiyan/p/5553306.html
+    implementation 'org.xutils:xutils:3.5.0'
+    /**
+     * com.trycatch.android:mysnackbar:1.2.2:从顶部弹出的SnackBar,该包使用时当前版本23以下需要添加CoordinatorLayout的依赖包
+     * 即com.android.support:design:27.1.1 android控件新特性，包括侧滑菜单
+     */
+    implementation 'com.trycatch.android:mysnackbar:1.2.2'
+    implementation 'com.android.support:design:27.1.1'
+    //    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation files('libs/cloudposApi-1.0.0-release.jar')
+    //富友银行卡消费AIDI
+    implementation files('libs/M1AIDL.jar')
+    implementation files('libs/PrintAIDL.jar')
+    // 百度语音
+    implementation files('libs/com.baidu.tts_2.3.1.20170808_e39ea89.jar')
+    //新大陆扫描设备的启用AIDI
+    implementation files('libs/lib-pos-pay-1.4.0.jar')
+    implementation 'com.alibaba:fastjson:1.2.56'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+}

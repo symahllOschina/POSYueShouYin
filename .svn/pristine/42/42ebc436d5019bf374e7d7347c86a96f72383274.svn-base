@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white_f3f7fd"
+        >
+        <include 
+            layout="@layout/menu_title_layout"
+            />
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="0.8"
+            android:background="@color/white_ffffff"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical|center_horizontal"
+            >
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pay_error_icon"
+                />
+            <TextView 
+                android:id="@+id/pay_error_tvErrorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="支付失败！"
+                android:textSize="@dimen/TextSize16"
+                android:textColor="@color/black_000000"
+                android:layout_marginTop="15dp"
+                />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1.2"
+            android:gravity="bottom"
+            >
+            <TextView
+			    android:id="@+id/pay_error_tvOk"
+			    android:layout_width="match_parent"
+			    android:layout_height="50dp"
+			    android:text="确定"
+			    android:textSize="@dimen/TextSize16"
+			    android:textColor="@color/white_ffffff"
+			    android:layout_marginTop="10dp"
+			    android:gravity="center"
+			    android:layout_margin="20dp"
+			    android:background="@color/green_30d60a"
+			    ></TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

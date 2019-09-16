@@ -1,0 +1,471 @@
+package com.wanding.xingpos;
+
+import android.Manifest;
+import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
+import com.baidu.tts.client.SpeechSynthesizer;
+import com.baidu.tts.client.SpeechSynthesizerListener;
+import com.baidu.tts.client.TtsMode;
+import com.wanding.xingpos.baidu.tts.util.AutoCheck;
+import com.wanding.xingpos.baidu.tts.util.InitConfig;
+import com.wanding.xingpos.baidu.tts.util.MySyntherizer;
+import com.wanding.xingpos.baidu.tts.util.NonBlockSyntherizer;
+import com.wanding.xingpos.baidu.tts.util.OfflineResource;
+import com.wanding.xingpos.baidu.tts.util.UiMessageListener;
+import com.wanding.xingpos.bean.UserLoginResData;
+import com.wanding.xingpos.utils.MySerialize;
+import com.wanding.xingpos.utils.SharedPreferencesUtil;
+import com.wanding.xingpos.utils.Utils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MainActivity extends BaseActivity implements View.OnClickListener{
+
+
+    private RelativeLayout homeLayout,myLayout;//首页,我的
+    private ImageView homeImg,myImg;
+    private TextView homeText,myText;
+
+    int tabIndex = 0;
+    private List<Fragment> fragmentList = new ArrayList<Fragment>();
+    MainHomeFragment homeFragment;
+    MainMyFragment myFragment;
+
+    private static final int REQUEST_PERMISSION = 0;//动态权限注册请求码
+
+    // ================== 初始化参数设置开始 ==========================
+    /**
+     * 发布时请替换成自己申请的appId appKey 和 secretKey。注意如果需要离线合成功能,请在您申请的应用中填写包名。
+     *
+     */
+    protected String appId = "11072721";
+
+    protected String appKey = "eZGGWmPXBYCbTBrcxZWkGX7B";
+
+    protected String secretKey = "a336b0c83f57cc5a878489f372ecfe9a";
+
+    // TtsMode.MIX; 离在线融合，在线优先； TtsMode.ONLINE 纯在线； 没有纯离线
+    protected TtsMode ttsMode = TtsMode.MIX;
+
+    // 离线发音选择，VOICE_FEMALE即为离线女声发音。
+    // assets目录下bd_etts_common_speech_m15_mand_eng_high_am-mix_v3.0.0_20170505.dat为离线男声模型；
+    // assets目录下bd_etts_common_speech_f7_mand_eng_high_am-mix_v3.0.0_20170512.dat为离线女声模型
+    protected String offlineVoice = OfflineResource.VOICE_MALE;
+
+    // ===============初始化参数设置完毕，更多合成参数请至getParams()方法中设置 =================
+
+    // 主控制类，所有合成控制方法从这个类开始
+    public static MySyntherizer synthesizer;
+    protected Handler mainHandler;
+
+    /**
+     * posProvider：MainActivity里定义为公共参数，区分pos提供厂商
+     * 值为 newland 表示新大陆
+     * 值为 fuyousf 表示富友
+     */
+    public static String posProvider;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        App.getInstance().addActivity(activity);
+        registerPermission();
+        initView();
+        initListener();
+        initFragments();
+
+
+
+        mainHandler = new Handler() {
+            /*
+             * @param msg
+             */
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+            }
+
+        };
+
+        //初始化百度语音引擎
+        initialTts();
+
+
+        /**
+         * POS机提供厂商标识
+         */
+        SharedPreferencesUtil sharedPreferencesUtil_posInit = new SharedPreferencesUtil(this, "posInit");
+        if(sharedPreferencesUtil_posInit.contain("posProvider")){
+            posProvider = (String) sharedPreferencesUtil_posInit.getSharedPreference("posProvider", "");
+            if(Utils.isEmpty(posProvider)){
+                //取默认值为新大陆
+                posProvider = Constants.NEW_LAND;
+            }
+        }else{
+            //取默认值为新大陆
+            posProvider = Constants.NEW_LAND;
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+
+    /** 初始化控件 */
+    private void initView(){
+        homeLayout = findViewById(R.id.main_tab_homeLayout);
+        myLayout = findViewById(R.id.main_tab_myLayout);
+        homeImg = findViewById(R.id.main_tab_homeImg);
+        myImg = findViewById(R.id.main_tab_myImg);
+        homeText = findViewById(R.id.main_tab_homeText);
+        myText = findViewById(R.id.main_tab_myText);
+    }
+
+    private void initListener(){
+        //注册tab点击时间
+        homeLayout.setOnClickListener(this);
+        myLayout.setOnClickListener(this);
+    }
+
+
+    private void initFragments() {
+        homeFragment = new MainHomeFragment();
+        myFragment = new MainMyFragment();
+        fragmentList.add(homeFragment);
+        fragmentList.add(myFragment);
+        for (Fragment fragment : fragmentList) {
+            addFragment(fragment);
+        }
+        //初始化加载项
+        int tabIndex = getIntent().getIntExtra("tabIndex", 0);
+        changeHomeTab(tabIndex);
+        homeImg.setImageDrawable(getResources().getDrawable(R.drawable.main_home_checd_icon));
+        homeText.setTextColor(getResources().getColor(R.color.blue_409EFF));
+    }
+
+    private void addFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().add(R.id.main_content_frame, fragment).commit();
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
+    private void hideFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().hide(fragment).commit();
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
+    private void showFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
+    public void changeHomeTab(int index) {
+//        setTitle(titleList.get(index));
+        for (int i = 0; i < fragmentList.size(); i++) {
+            if (i == index) {
+                showFragment(fragmentList.get(i));
+            } else {
+                hideFragment(fragmentList.get(i));
+            }
+        }
+    }
+
+    /**
+     * 初始化所有tab
+     */
+    private void resetImg(){
+        homeImg.setImageDrawable(getResources().getDrawable(R.drawable.main_home_nochecd_icon));
+        homeText.setTextColor(getResources().getColor(R.color.gray_9a9a9a));
+        myImg.setImageDrawable(getResources().getDrawable(R.drawable.main_my_nochecd_icon));
+        myText.setTextColor(getResources().getColor(R.color.gray_9a9a9a));
+    }
+
+    /**
+     * 初始化引擎，需要的参数均在InitConfig类里
+     * <p>
+     * DEMO中提供了3个SpeechSynthesizerListener的实现
+     * MessageListener 仅仅用log.i记录日志，在logcat中可以看见
+     * UiMessageListener 在MessageListener的基础上，对handler发送消息，实现UI的文字更新
+     * FileSaveListener 在UiMessageListener的基础上，使用 onSynthesizeDataArrived回调，获取音频流
+     */
+    protected void initialTts() {
+        try {
+            LoggerProxy.printable(true); // 日志打印在logcat中
+            // 设置初始化参数
+            // 此处可以改为 含有您业务逻辑的SpeechSynthesizerListener的实现类
+            SpeechSynthesizerListener listener = new UiMessageListener(mainHandler);
+
+            Map<String, String> params = getParams();
+
+
+            // appId appKey secretKey 网站上您申请的应用获取。注意使用离线合成功能的话，需要应用中填写您app的包名。包名在build.gradle中获取。
+            InitConfig initConfig = new InitConfig(appId, appKey, secretKey, ttsMode, params, listener);
+
+            // 如果您集成中出错，请将下面一段代码放在和demo中相同的位置，并复制InitConfig 和 AutoCheck到您的项目中
+            // 上线时请删除AutoCheck的调用
+            AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    if (msg.what == 100) {
+                        AutoCheck autoCheck = (AutoCheck) msg.obj;
+                        synchronized (autoCheck) {
+                            String message = autoCheck.obtainDebugMessage();
+//                        toPrint(message); // 可以用下面一行替代，在logcat中查看代码
+                            Log.e("AutoCheckMessage", message);
+                        }
+                    }
+                }
+
+            });
+            // 此处可以改为MySyntherizer 了解调用过程
+            synthesizer = new NonBlockSyntherizer(this, initConfig, mainHandler);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+
+    /**
+     * 合成的参数，可以初始化时填写，也可以在合成前设置。
+     *
+     * @return
+     */
+    protected Map<String, String> getParams() {
+        Map<String, String> params = new HashMap<String, String>();
+        // 以下参数均为选填
+        // 设置在线发声音人： 0 普通女声（默认） 1 普通男声 2 特别男声 3 情感男声<度逍遥> 4 情感儿童声<度丫丫>
+        params.put(SpeechSynthesizer.PARAM_SPEAKER, "0");
+        // 设置合成的音量，0-9 ，默认 5
+        params.put(SpeechSynthesizer.PARAM_VOLUME, "9");
+        // 设置合成的语速，0-9 ，默认 5
+        params.put(SpeechSynthesizer.PARAM_SPEED, "5");
+        // 设置合成的语调，0-9 ，默认 5
+        params.put(SpeechSynthesizer.PARAM_PITCH, "5");
+
+        params.put(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_DEFAULT);
+        // 该参数设置为TtsMode.MIX生效。即纯在线模式不生效。
+        // MIX_MODE_DEFAULT 默认 ，wifi状态下使用在线，非wifi离线。在线状态下，请求超时6s自动转离线
+        // MIX_MODE_HIGH_SPEED_SYNTHESIZE_WIFI wifi状态下使用在线，非wifi离线。在线状态下， 请求超时1.2s自动转离线
+        // MIX_MODE_HIGH_SPEED_NETWORK ， 3G 4G wifi状态下使用在线，其它状态离线。在线状态下，请求超时1.2s自动转离线
+        // MIX_MODE_HIGH_SPEED_SYNTHESIZE, 2G 3G 4G wifi状态下使用在线，其它状态离线。在线状态下，请求超时1.2s自动转离线
+
+        // 离线资源文件， 从assets目录中复制到临时目录，需要在initTTs方法前完成
+        OfflineResource offlineResource = createOfflineResource(offlineVoice);
+        // 声学模型文件路径 (离线引擎使用), 请确认下面两个文件存在
+        params.put(SpeechSynthesizer.PARAM_TTS_TEXT_MODEL_FILE, offlineResource.getTextFilename());
+        params.put(SpeechSynthesizer.PARAM_TTS_SPEECH_MODEL_FILE,
+                offlineResource.getModelFilename());
+        return params;
+
+    }
+
+    protected OfflineResource createOfflineResource(String voiceType) {
+        OfflineResource offlineResource = null;
+        try {
+            offlineResource = new OfflineResource(this, voiceType);
+        } catch (IOException e) {
+            // IO 错误自行处理
+            e.printStackTrace();
+//            toPrint("【error】:copy files from assets failed." + e.getMessage());
+            // 可以用下面一行替代，在logcat中查看代码
+            Log.e("【error】:", e.getMessage());
+        }
+        return offlineResource;
+    }
+
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.main_tab_homeLayout:
+                tabIndex = 0;
+                //先初始化所有Tab
+                resetImg();
+                homeImg.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.main_home_checd_icon));
+                homeText.setTextColor(ContextCompat.getColor(activity,R.color.blue_409EFF));
+                break;
+            case R.id.main_tab_myLayout:
+                tabIndex = 1;
+                //先初始化所有Tab
+                resetImg();
+                myImg.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.main_my_checd_icon));
+                myText.setTextColor(ContextCompat.getColor(activity,R.color.blue_409EFF));
+                break;
+            default:
+
+                break;
+        }
+        changeHomeTab(tabIndex);
+
+    }
+
+
+
+
+
+
+    /**
+     * Android6.0动态注册权限
+     */
+    private void registerPermission(){
+        /**
+         *默认安装禁止SD卡的读写权限，以下方式打开权限
+         */
+        try {
+            PackageManager pkgManager = getPackageManager();
+
+            // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
+            boolean sdCardWritePermission =
+                    pkgManager.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
+
+            // read phone state用于获取 imei 设备信息
+            boolean phoneSatePermission =
+                    pkgManager.checkPermission(Manifest.permission.READ_PHONE_STATE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
+
+            //相机权限
+            boolean cameraPermission = pkgManager.checkPermission(Manifest.permission.CAMERA,getPackageName()) == PackageManager.PERMISSION_GRANTED;
+            //sd卡读取权限
+            boolean sdCardReadPermission = pkgManager.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE,getPackageName()) == PackageManager.PERMISSION_GRANTED;
+
+            if (Build.VERSION.SDK_INT >= 23 && !sdCardWritePermission || !phoneSatePermission || !cameraPermission || !sdCardReadPermission) {
+                requestPermission();
+            }else{
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void requestPermission() {
+        try {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.READ_PHONE_STATE,
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE
+                            },
+                    REQUEST_PERMISSION);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        try {
+            switch (requestCode){
+                case REQUEST_PERMISSION://SD卡访问权限
+                    if ((grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+
+                    } else {
+//                        ToastUtil.showText(context,"权限拒绝！",1);
+//                        //没有权限
+//                        new AlertDialog.Builder(activity)
+//                                .setTitle("提示")
+//                                .setMessage("应用必须打开[允许安装未知来源应用，SD卡读写，相机拍照]权限，请去设置中开启权限")
+//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        JumpPermissionManagement.goToSettings(activity);
+//                                        dialog.dismiss();
+//
+//                                    }
+//                                }).show();
+
+                    }
+                    break;
+                default:
+
+                    break;
+            }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**  退出应用提示窗口 */
+    private void showColseAPPDialog(){
+        View view = LayoutInflater.from(this).inflate(R.layout.close_dialog_activity, null);
+        TextView btok = (TextView) view.findViewById(R.id.close_dialog_tvOk);
+        TextView btCancel = (TextView) view.findViewById(R.id.close_dialog_tvCancel);
+        final Dialog myDialog = new Dialog(this,R.style.dialog);
+        Window dialogWindow = myDialog.getWindow();
+        WindowManager.LayoutParams params = myDialog.getWindow().getAttributes(); // 获取对话框当前的参数值
+        dialogWindow.setAttributes(params);
+        myDialog.setContentView(view);
+        btok.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //关闭应用
+                finish();
+                myDialog.dismiss();
+
+            }
+        });
+        btCancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                myDialog.dismiss();
+            }
+        });
+        myDialog.show();
+    }
+
+    //拦截/屏蔽返回键、MENU键实现代码
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) { //监控/拦截/屏蔽返回键
+            showColseAPPDialog();
+        }
+        else if(keyCode == KeyEvent.KEYCODE_MENU) {//MENU键
+            //监控/拦截菜单键
+            return true;
+        }
+        else if (keyCode == KeyEvent. KEYCODE_HOME) {
+            //(屏蔽HOME键3)
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+}

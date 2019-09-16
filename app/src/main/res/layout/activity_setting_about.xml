@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white_f8f8f8"
+     >
+    
+     <include layout="@layout/menu_title_layout"/>
+	
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:background="@color/white_f3f7fd"
+         android:paddingTop="50dp"
+         android:paddingBottom="50dp"
+         android:gravity="center"
+         >
+         <ImageView 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:src="@drawable/ic_launcher"
+             />
+         <TextView 
+             android:id="@+id/setting_aboutapp_tvVersionName"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="悦收银: 1.01"
+             android:textSize="@dimen/TextSize16"
+             android:textColor="@color/blue_B0C4DE"
+             android:layout_marginTop="10dp"
+             />
+     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white_f2f2f2"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/setting_aboutapp_layoutGetVsersion"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white_ffffff"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="检测新版本"
+                android:textSize="@dimen/TextSize14"
+                android:textColor="@color/grey_666666"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/more_icon"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

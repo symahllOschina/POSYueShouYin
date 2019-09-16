@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.wanding.xingpos"
+    >
+
+
+
+    <!-- 网络请求权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Zxing扫描权限 -->
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+    <!--写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--外存储读权限，构建语法需要用到此权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!--用于读取手机当前的状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--读取联系人权限，上传联系人需要用到此权限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!--用于访问网络，网络定位需要上网-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!--用于访问wifi网络信息，wifi信息会用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+
+    <!-- GPS定位权限 用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--用于访问GPS定位-->
+    <!--手机定位信息，用来为语义等功能提供定位，提供更精准的服务-->
+    <!--定位信息是敏感信息，可通过Setting.setLocationEnable(false)关闭定位请求 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- 星POS打印权限 -->
+    <uses-permission android:name="android.permission.MANAGE_NEWLAND"/>
+    <uses-permission android:name="android.permission.MANAGE_NEWLANDUART3"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!-- 百度语音合成 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- MainActivity -->
+        <activity
+            android:name=".OldMainActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            ></activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            ></activity>
+        <!-- 签到界面 -->
+        <activity
+            android:name=".SignInActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            ></activity>
+        <!-- 收款界面 -->
+        <activity
+            android:name=".activity.CashierActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            />
+        <!-- （交易明细）订单列表Activity -->
+        <activity
+            android:name=".activity.OrderListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            ></activity>
+        <!-- 订单详情Activity -->
+        <activity
+            android:name=".activity.OrderDetailsActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            ></activity>
+        <!-- 汇总Activity -->
+        <activity
+            android:name=".activity.SummaryActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            ></activity>
+        <!-- 支付成功提示Activity -->
+        <activity
+            android:name=".activity.PaySuccessActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            ></activity>
+        <!-- 交易失败（包括支付失败，退款失败，查询失败）提示Activity -->
+        <activity
+            android:name=".activity.PayErrorActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 预授权管理Activity -->
+        <activity
+            android:name=".auth.activity.AuthManageActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 新大陆POS机预授权Activity -->
+        <activity
+            android:name=".auth.activity.NewLandAuthActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 预授权Activity（除新大陆预授权外全部预授权操作） -->
+        <activity
+            android:name=".auth.activity.AuthActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 重打印 -->
+        <activity
+            android:name=".activity.AgainPrintActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 结算、交接班Activity -->
+        <activity
+            android:name=".activity.ShiftActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 结算、交接班记录Activity -->
+        <activity
+            android:name=".activity.ShiftRecordActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 结算、交接班记录详情Activity -->
+        <activity
+            android:name=".activity.ShiftRecordDetailActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!--退款管理Activity -->
+        <activity
+            android:name=".activity.RefundManageActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!--退款Activity(银行卡退款) -->
+        <activity
+            android:name=".activity.CardRefundActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!--退款Activity(扫码退款) -->
+        <activity
+            android:name=".activity.ScanRefundActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 员工列表Activity -->
+        <activity
+            android:name=".activity.StaffListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            ></activity>
+        <!-- 添加员工Activity -->
+        <activity
+            android:name=".activity.StaffAddActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            ></activity>
+        <!-- 设置Activity -->
+        <activity
+            android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 设置  支付通道选择Activity -->
+        <activity
+            android:name=".activity.SetPayServiceActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 设置  打印设置界面(选择打印联数)Activity -->
+        <activity
+            android:name=".activity.SetPrintNumActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 设置  默认支付金额设置Activity -->
+        <activity
+            android:name=".activity.SetMoneyActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 设置 商户信息Activity  -->
+        <activity
+            android:name=".activity.BusinessDetailsActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 设置 关于我们（ 关于悦收银） 版本信息Activity  -->
+        <activity
+            android:name=".activity.AboutUsActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 卡劵管理Activity  -->
+        <activity
+            android:name=".card.stock.activity.CardStockManageActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 核销Activity  -->
+        <activity
+            android:name=".card.stock.activity.CheckCardStockActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 核销记录Activity -->
+        <activity
+            android:name=".card.stock.activity.CheckCardStockRecodeListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 核销记录详情Activity  -->
+        <activity
+            android:name=".card.stock.activity.CheckCardStockRecodeDetailActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 批量制劵Activity  -->
+        <activity
+            android:name=".card.stock.activity.BatchCardStockActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+        <!-- 选择卡劵类型Activity  -->
+        <activity
+            android:name=".card.stock.activity.CardStockTypeListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            ></activity>
+    </application>
+
+</manifest>

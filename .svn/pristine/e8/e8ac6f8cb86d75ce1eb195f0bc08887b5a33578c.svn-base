@@ -1,0 +1,156 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- 全局主题中加入以下设置防止切换Activity出现短暂白屏现象 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/white_ffffff</item>
+        <item name="actionMenuTextColor">@color/white_ffffff</item>
+        <item name="android:textSize">@dimen/TextSize16</item>
+    </style>
+    <!-- 统一标题栏字体样式 -->
+    <style name="title_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/TextSize20</item>
+        <item name="android:textColor">@color/white_ffffff</item>
+    </style>
+    <!-- 统一Button样式 -->
+    <style name="button_styles">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:text">确 认</item>
+        <item name="android:textSize">@dimen/TextSize18</item>
+        <item name="android:textColor">@color/white_ffffff</item>
+        <item name="android:background">@drawable/button_style</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- 统一分割线 -->
+    <style name="divider_line1dp">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/gray_e5e5e5</item>
+    </style>
+    <style name="divider_line1dp_h">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/gray_e5e5e5</item>
+    </style>
+    <!-- 主界面金额按钮 -->
+    <style name="content_layout_button_styles">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/button_num_style</item>
+        <item name="android:textSize">@dimen/TextSize35</item>
+        <item name="android:textColor">@color/black_333</item>
+    </style>
+    <!-- 主界面底部支付类型TextView -->
+    <style name="pay_type_layout_text_styles">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textSize">@dimen/TextSize16</item>
+        <item name="android:textColor">@color/grey_676767</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <!-- 主界面NavigationView的item样式 -->
+    <style name="activity_main_nav_styles">
+        <item name="android:listPreferredItemHeightSmall">30dp</item>
+    </style>
+    <!-- 主界面NavigationView的菜单项的文本样式 -->
+    <style name="activity_main_nav_text_styles">
+        <item name="android:textColor">@color/grey_666666</item>
+        <item name="android:textSize">@dimen/TextSize16</item>
+        <item name="android:padding">5dp</item>
+    </style>
+    <!-- homeFragment界面菜单Text -->
+    <style name="home_menu_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/TextSize18</item>
+        <item name="android:textColor">@color/grey_676767</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+    <!-- myFragment界面菜单Text -->
+    <style name="my_menu_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/TextSize18</item>
+        <item name="android:textColor">@color/grey_676767</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+    <!-- 统一界面左侧名称Text（activity_batch_card_stock.xml） -->
+    <style name="info_text_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/TextSize16</item>
+        <item name="android:textColor">@color/grey_666666</item>
+    </style>
+    <style name="info_text_etText">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/white_ffffff</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:padding">7dp</item>
+        <item name="android:textSize">@dimen/TextSize16</item>
+        <item name="android:textColor">@color/grey_666666</item>
+    </style>
+    <!-- 系统Dialog样式 -->
+    <style name="Translucent_Theme" parent="android:style/Theme.Holo.Light.Dialog.MinWidth">
+        <!-- 显示时屏幕变暗 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 设置window背景透明，也就是去边框 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <!-- 自定义Dialog样式 -->
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
+    <!-- 日期选择Dialog样式定义 -->
+    <style name="TimePickerDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/color_bg</item>
+    </style>
+    <!-- 统一设置管理菜单界面Relativelayout -->
+    <style name="manage_menu_relativelayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
+    <style name="manage_menu_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/TextSize16</item>
+        <item name="android:textColor">@color/grey_676767</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
+</resources>

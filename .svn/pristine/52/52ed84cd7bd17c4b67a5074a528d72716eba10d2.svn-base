@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/white_f3f7fd"
+    >
+    
+	<include layout="@layout/menu_title_layout"/>
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="60dp"
+	    android:orientation="horizontal"
+	    android:paddingLeft="15dp"
+	    android:paddingRight="15dp"
+	    android:layout_marginTop="10dp"
+	    >
+	    <EditText 
+	        android:id="@+id/add_staff_etName"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:background="@color/white_ffffff"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+		    android:hint="请输入员工名称！"
+		    android:maxLength="8"
+		    />
+	</LinearLayout>
+	
+	<TextView 
+	    android:id="@+id/add_staff_tvSaveStaff"
+	    style="@style/button_styles"
+	    android:layout_margin="15dp"
+	    />
+    
+</LinearLayout>

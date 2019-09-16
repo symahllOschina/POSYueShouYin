@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    android:orientation="horizontal"            
+    android:id="@+id/toast_layout_root"
+    > 
+   
+ <LinearLayout 
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:orientation="vertical"
+     android:padding="10dp"
+     android:gravity="center"
+    android:background="@drawable/toast_bg_styles"  
+     >
+     <ImageView   
+		    android:id="@+id/msg_img"  
+		    android:layout_width="wrap_content"  
+		    android:layout_height="wrap_content"  
+		    android:src="@drawable/addshopcard_success"
+		    android:layout_marginBottom="10dp"
+		    />  
+		<TextView android:id="@+id/msg_text"  
+		    android:layout_width="wrap_content"  
+		    android:layout_height="wrap_content"  
+		    android:textColor="@color/white_ffffff"  
+		    android:text="加入购物车成功"
+		    android:textSize="@dimen/TextSize14"
+		    />
+ </LinearLayout>
+</LinearLayout>

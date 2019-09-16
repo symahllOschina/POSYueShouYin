@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:background="@color/white_ffffff"
+    >
+    
+    <!-- 顶部标题 -->
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+	    android:paddingLeft="20dp"
+	    android:paddingRight="20dp"
+	    android:background="@color/white_f3f7fd"
+        >
+        <TextView
+            android:id="@+id/street_select_dialog_tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请选择交班人"
+            android:textSize="@dimen/TextSize18"
+            android:textColor="@color/gray_999"
+            android:layout_marginLeft="10dp"
+            ></TextView>
+    </LinearLayout>
+	<!-- 中间提示内容 -->
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="200dp"
+	    android:orientation="vertical"
+	    android:gravity="center_vertical"
+	    android:paddingLeft="20dp"
+	    android:paddingRight="20dp"
+	    >
+        <ListView
+            android:id="@+id/staff_select_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            ></ListView>
+	</LinearLayout>
+</LinearLayout>

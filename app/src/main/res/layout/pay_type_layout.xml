@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <View style="@style/divider_line1dp"></View>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:background="@color/white_ffffff">
+
+        <LinearLayout
+            android:id="@+id/pay_type_cardPayLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/button_num_style"
+            >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/pay_type_card_icon" />
+
+            <TextView
+                style="@style/pay_type_layout_text_styles"
+                android:text="刷卡"></TextView>
+        </LinearLayout>
+
+        <View
+            style="@style/divider_line1dp_h"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"></View>
+
+        <LinearLayout
+            android:id="@+id/pay_type_wxPayLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/button_num_style">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/wx_pay_icon" />
+
+            <TextView
+                style="@style/pay_type_layout_text_styles"
+                android:text="微信"></TextView>
+        </LinearLayout>
+
+        <View
+            style="@style/divider_line1dp_h"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"></View>
+
+        <LinearLayout
+            android:id="@+id/pay_type_aliPayLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:visibility="visible"
+            android:background="@drawable/button_num_style">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/ali_pay_icon" />
+
+            <TextView
+                style="@style/pay_type_layout_text_styles"
+                android:text="支付宝"></TextView>
+        </LinearLayout>
+    </LinearLayout>
+    <View style="@style/divider_line1dp"></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:background="@color/white_ffffff">
+
+        <LinearLayout
+            android:id="@+id/pay_type_bestPayLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/button_num_style"
+            >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/yizhifu_icon" />
+
+            <TextView
+                style="@style/pay_type_layout_text_styles"
+                android:text="翼支付"></TextView>
+        </LinearLayout>
+
+        <View
+            style="@style/divider_line1dp_h"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"></View>
+
+        <LinearLayout
+            android:id="@+id/pay_type_unionPayLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:visibility="visible"
+            android:background="@drawable/button_num_style">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/unionpay_icon" />
+
+            <TextView
+                style="@style/pay_type_layout_text_styles"
+                android:text="银联二维码"></TextView>
+        </LinearLayout>
+
+        <View
+            style="@style/divider_line1dp_h"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"></View>
+
+        <LinearLayout
+            android:id="@+id/pay_type_memberPayLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/button_num_style">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/pay_type_member_icon" />
+
+            <TextView
+                style="@style/pay_type_layout_text_styles"
+                android:text="会员"></TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

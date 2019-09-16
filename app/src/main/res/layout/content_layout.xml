@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.wanding.xingpos.OldMainActivity"
+    android:orientation="vertical"
+    android:background="@color/white_f3f7fd"
+    >
+    <EditText
+        android:id="@+id/content_layout_etSumMoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:gravity="right"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:hint="￥0.00"
+        android:textColorHint="@color/yellow_feb60f"
+        android:text=""
+        android:textSize="@dimen/TextSize40"
+        android:textColor="@color/yellow_feb60f"
+        android:background="@null"
+        android:maxLength="10"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <View
+            style="@style/divider_line1dp"
+            ></View>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            >
+            <View
+                style="@style/divider_line1dp_h"
+                />
+            <Button
+                android:id="@+id/content_layout_tvSeven"
+                android:text="7"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+            <Button
+                android:id="@+id/content_layout_tvEight"
+                android:text="8"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvNine"
+                android:text="9"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <ImageButton
+                android:id="@+id/content_layout_imagEliminate"
+                android:src="@drawable/del_icon"
+                style="@style/content_layout_button_styles"
+                />
+            <View
+                style="@style/divider_line1dp_h"
+                />
+        </LinearLayout>
+        <View
+            style="@style/divider_line1dp"
+            ></View>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            >
+            <View
+                style="@style/divider_line1dp_h"
+                />
+            <Button
+                android:id="@+id/content_layout_tvFour"
+                android:text="4"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvFive"
+                android:text="5"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvSix"
+                android:text="6"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvSpot"
+                android:text="."
+                style="@style/content_layout_button_styles"
+                />
+            <View
+                style="@style/divider_line1dp_h"
+                />
+        </LinearLayout>
+        <View
+            style="@style/divider_line1dp"
+            ></View>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            >
+            <View
+                style="@style/divider_line1dp_h"
+                />
+            <Button
+                android:id="@+id/content_layout_tvOne"
+                android:text="1"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvTwo"
+                android:text="2"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvThree"
+                android:text="3"
+                style="@style/content_layout_button_styles"
+                />
+
+            <View
+                style="@style/divider_line1dp_h"
+                />
+
+            <Button
+                android:id="@+id/content_layout_tvZero"
+                android:text="0"
+                style="@style/content_layout_button_styles"
+                />
+            <View
+                style="@style/divider_line1dp_h"
+                />
+        </LinearLayout>
+        <View
+            style="@style/divider_line1dp"
+            ></View>
+    </LinearLayout>
+</LinearLayout>

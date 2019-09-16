@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:id="@+id/card_stock_type_list_item_tvName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text=""
+        android:textSize="@dimen/TextSize14"
+        android:textColor="@color/black_333"
+        android:background="@color/white_ffffff"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        />
+
+</LinearLayout>

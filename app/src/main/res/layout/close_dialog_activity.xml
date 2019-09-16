@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@color/white_ffffff"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        >
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@color/white_f3f7fd"
+            android:paddingTop="20dp"
+            android:paddingBottom="60dp"
+            >
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提示"
+                android:textSize="@dimen/TextSize22"
+                android:textColor="@color/black_333"
+                android:textStyle="bold"
+                />
+            <TextView 
+                android:id="@+id/close_dialog_tvTextHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="是否退出应用？"
+                android:textSize="@dimen/TextSize16"
+                android:textColor="@color/black_333"
+                android:layout_marginTop="15dp"
+                />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            >
+            <TextView 
+                android:id="@+id/close_dialog_tvCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="取   消"
+                android:textSize="@dimen/TextSize17"
+                android:textColor="@color/white_ffffff"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:background="@color/red_f56c6c"
+                android:gravity="center"
+                />
+            <TextView 
+                android:id="@+id/close_dialog_tvOk"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="确   定"
+                android:textSize="@dimen/TextSize17"
+                android:textColor="@color/white_ffffff"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:background="@color/blue_409EFF"
+                android:gravity="center"
+                android:layout_marginLeft="15dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

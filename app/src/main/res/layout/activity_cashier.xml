@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OldMainActivity"
+    android:orientation="vertical"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <include layout="@layout/menu_title_layout"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <!-- 公共支付layout -->
+            <include layout="@layout/content_layout"/>
+            <!-- 支付类型选择layout -->
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pay_bottom_layout"
+                layout="@layout/pay_type_layout"
+                android:layout_alignParentBottom="true"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- app:headerLayout : 指定头部布局的资源文件。
+        app:menu : 指定导航菜单的资源文件。
+        app:itemBackground : 指定菜单项的的背景。
+        app:itemTextColor : 指定菜单项的文字颜色。
+        app:itemTextAppearance : 指定菜单项的文字样式。
+        app:itemIconTint : 指定菜单项的图标色彩。
+
+        app:itemTextAppearance="@style/activity_main_nav_text_styles"
+        -->
+</LinearLayout>

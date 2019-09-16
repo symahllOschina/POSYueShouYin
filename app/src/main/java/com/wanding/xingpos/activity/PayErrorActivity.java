@@ -1,0 +1,111 @@
+package com.wanding.xingpos.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.wanding.xingpos.BaseActivity;
+import com.wanding.xingpos.R;
+
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
+
+/**  交易失败提示界面 */
+@ContentView(R.layout.activity_pay_error)
+public class PayErrorActivity extends BaseActivity implements OnClickListener {
+
+	@ViewInject(R.id.menu_title_imageView)
+	ImageView imgBack;
+	@ViewInject(R.id.menu_title_layout)
+	LinearLayout titleLayout;
+	@ViewInject(R.id.menu_title_tvTitle)
+	TextView tvTitle;
+	@ViewInject(R.id.menu_title_imgTitleImg)
+	ImageView imgTitleImg;
+	@ViewInject(R.id.menu_title_tvOption)
+	TextView tvOption;
+
+	@ViewInject(R.id.pay_error_tvErrorText)
+	private TextView tvErrorText;
+	@ViewInject(R.id.pay_error_tvOk)
+	private TextView tvOk;
+
+	
+	/** optionTypeStr:操作界面传递的值（010=支付失败，020=退款失败，030=查询失败）  */
+	private String optionTypeStr = "";
+
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		imgBack.setVisibility(View.VISIBLE);
+		imgBack.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.back_icon));
+		Intent in = getIntent();
+		optionTypeStr = in.getStringExtra("optionTypeStr");
+
+		initView();
+		initListener();
+	}
+	
+	
+
+	
+	/** 
+	 * 初始化界面控件
+	 */
+	private void initView(){
+
+
+
+		//界面标题
+		String activityTitleStr = "";
+		//错误定义text
+		String errorTextStr = "";
+		if(optionTypeStr!=null&&!"".equals(optionTypeStr)){
+			if("010".equals(optionTypeStr)){
+				activityTitleStr = "收银";
+				errorTextStr = "交易失败";
+			}else if("020".equals(optionTypeStr)){
+				activityTitleStr = "退款";
+				errorTextStr = "退款失败";
+			}else if("030".equals(optionTypeStr)){
+				activityTitleStr = "查询";
+				errorTextStr = "查询失败";
+			}
+		}else{
+			activityTitleStr = "交易提示";
+			errorTextStr = "未知错误";
+		}
+
+		tvTitle.setText(activityTitleStr);
+		tvErrorText.setText(errorTextStr);
+	}
+
+	private void initListener(){
+		imgBack.setOnClickListener(this);
+		tvOk.setOnClickListener(this);
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		Intent in = null;
+		switch (v.getId()) {
+		case R.id.menu_title_imageView:
+			finish();
+			break;
+		case R.id.pay_error_tvOk:
+			finish();
+			break;
+			default:
+				break;
+			
+		}
+	}
+}

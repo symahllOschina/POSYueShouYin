@@ -1,0 +1,146 @@
+package com.wanding.xingpos.http.util;
+
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+public class HttpURLConnectionUtil {
+
+	/**
+	 * 传入一个Url地址  参数为字符串
+	 */
+	public static String doPos(String path,String content ) throws Exception{
+		String jsonResult = "";
+        HttpURLConnection connection = (HttpURLConnection) new URL(path).openConnection();
+        //HttpURLConnection connection = (HttpURLConnection) nURL.openConnection();  
+        connection.setConnectTimeout(60*1000);  //设置连接主机超时（单位：毫秒）
+        connection.setReadTimeout(60*1000);   //setReadTimeout：设置从主机读取数据超时（单位：毫秒）
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);  
+        connection.setRequestProperty("User-Agent", "Fiddler");  
+        connection.setRequestProperty("Content-Type", "application/json");  
+        connection.setRequestProperty("Charset", "UTF-8");
+		connection.setChunkedStreamingMode(0);//请求超时时会导致自动重新请求，这里设置不重新请求
+//		HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+//			@Override
+//			public boolean verify(String hostname, SSLSession session) {
+//				HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
+//				Boolean result = hv.verify("*.weupay.com",session);
+//				return result;
+//			}
+//		};
+//		connection.setHostnameVerifier(hostnameVerifier);
+        OutputStream os = connection.getOutputStream();  
+        os.write(content.getBytes());  
+        os.close();  
+        int  code = connection.getResponseCode();
+        Log.e("返回状态码：", code+"");
+        if(code == 200){
+        	//请求成功之后的操作
+     	   InputStream is = connection.getInputStream();  
+     	   //下面的json就已经是{"Person":{"username":"zhangsan","age":"12"}}//这个形式了,只不过是String类型  
+			jsonResult = readString(is);
+//			Log.e("返回JSON值：", jsonResult);
+     	  return jsonResult;
+        }
+		
+		return jsonResult;
+	}
+
+
+	/**
+	 * 输入流转字节数组
+	 */
+	public static byte[] readBytes(InputStream is){
+		try {
+			byte[] buffer = new byte[1024];  
+			int len = -1 ;  
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+			while((len = is.read(buffer)) != -1){  
+				baos.write(buffer, 0, len);  
+			}  
+			baos.close();  
+			return baos.toByteArray();  
+		} catch (Exception e) {  
+			e.printStackTrace();  
+		}  
+			return null ;  
+	}
+
+	/**
+	 * 输入流转字符串
+	 */
+	public static String readString(InputStream is){  
+		return new String(readBytes(is));  
+	}
+
+
+	/** HashMap<String, String> 转换为参数 */
+	public static String getParams(HashMap<String, String> paramsMap) {
+		String result = "";
+		for (HashMap.Entry<String, String> entity : paramsMap.entrySet()) {
+			result += "&" + entity.getKey() + "=" + entity.getValue();
+		}
+		return result.substring(1);
+	}
+
+	/***
+	 * 使用方式：test
+	 */
+	private static void doLoginTest(){
+		final String url = "http://www.baidu.com/";
+		new Thread(){
+			@Override
+			public void run() {
+				try {
+					JSONObject userJSON = new JSONObject();
+					userJSON.put("userName","limeimei");
+					userJSON.put("passwd","123456");
+					String content = String.valueOf(userJSON);
+					Log.e("发起json请求参数：", content);
+					String jsonStr = HttpURLConnectionUtil.doPos(url,content);
+					Log.e("返回字符串结果：", jsonStr);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}catch (IOException e){
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+
+		new Thread(){
+			@Override
+			public void run() {
+				try {
+					// 拼装数据，向服务端发起请求
+					Map<String, String> paramsMap = new HashMap<String, String>();
+					paramsMap.put("userName","limeimei");
+					paramsMap.put("passwd","123456");
+					String paramsStr = HttpURLConnectionUtil.getParams((HashMap<String, String>) paramsMap);
+					String content = String.valueOf(paramsStr);
+					Log.e("发起拼接请求参数：", content);
+					String jsonStr = HttpURLConnectionUtil.doPos(url,content);
+					Log.e("返回字符串结果：", jsonStr);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}catch (IOException e){
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
+}

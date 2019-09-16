@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:orientation="vertical"
+    >
+	<include
+	    layout="@layout/menu_title_layout"
+       	/>
+	<View
+	    style="@style/divider_line1dp"
+	    />
+	<include 
+	    layout="@layout/shift_content_layout"
+	    />
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="horizontal"
+		android:gravity="bottom"
+	    >
+	    <TextView 
+	    	android:id="@+id/shift_record_detail_tvPrint"
+	        android:layout_width="0dp"
+	        android:layout_height="45dp"
+	        android:layout_weight="1"
+	        android:text="打印"
+	        android:textSize="@dimen/TextSize14"
+	        android:textColor="@color/white_ffffff"
+	        android:gravity="center"
+	        android:background="@drawable/button_confirm_style"
+	        />
+	</LinearLayout>
+	
+</LinearLayout>

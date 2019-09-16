@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white_f3f7fd"
+        >
+        <include 
+            layout="@layout/menu_title_layout"
+            />
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1.5"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical|center_horizontal"
+            >
+            <TextView
+                style="@style/hint_text"
+                android:text="退款成功"
+                />
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/print_icon1"
+                android:layout_marginTop="15dp"
+                />
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在打印"
+                android:textSize="@dimen/TextSize18"
+                android:textColor="@color/gray_999"
+                android:layout_marginTop="50dp"
+                />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.5"
+            >
+            <TextView
+			    android:id="@+id/refund_success_tvOK"
+			    style="@style/button_styles"
+			    android:text="完成"
+			    android:layout_marginTop="10dp"
+			    android:layout_margin="20dp"
+			    ></TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
